@@ -19,7 +19,7 @@ import csvIO.file_loader;
 public class App{
     public static void main(String[] args) {
         // JFileChooser chooser = new JFileChooser("C:/Users/khali/Desktop");
-        file_loader reader = new file_loader("D:/Productivity/Stat Machomp/push yourself/lib/testing files/income_data.csv");
+        file_loader reader = new file_loader("D:/Productivity/Stat Machomp/Khalil's KoolGrid Editor/lib/breast-cancer-dataset.csv");
         frame_maker(reader);
     }
     
