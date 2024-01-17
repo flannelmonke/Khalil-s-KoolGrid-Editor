@@ -13,20 +13,23 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import csvIO.file_loader;
 
 public class App{
     public static void main(String[] args) {
         // JFileChooser chooser = new JFileChooser("C:/Users/khali/Desktop");
-        file_loader reader = new file_loader("D:/Productivity/Stat Machomp/Khalil's KoolGrid Editor/lib/breast-cancer-dataset.csv");
+        // file_loader reader = new file_loader("D:/Productivity/Stat Machomp/Khalil's KoolGrid Editor/lib/breast-cancer-dataset.csv");
+        file_loader reader = new file_loader();
         frame_maker(reader);
     }
     
     public static void frame_maker(file_loader reader) {
         // Frame Creation
         JFrame frame = new JFrame("Khalil's KoolGrid Editor");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setSize(800, 800);
         frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         Image icon = Toolkit.getDefaultToolkit().getImage("D:/Productivity/Stat Machomp/push yourself/lib/assets/monkey-98455_1920.png");
@@ -39,7 +42,7 @@ public class App{
             cols = 15;
         }
 
-        JPanel CellGrid = new JPanel(new GridLayout(rows, cols, 1, 1));
+        JPanel CellGrid = new JPanel(new GridLayout(rows, cols, 0, 0));
     
         for (int i = 0; i < reader.rows; i++) {
             for (int j = 0; j < cols; j++) {
@@ -68,15 +71,46 @@ public class App{
         Button open_file = new Button("Open File...");
         open_file.setPreferredSize(new Dimension(100,40));
         
+        open_file.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(e.getSource()==open_file){
+
+                    JFileChooser fileChooser = new JFileChooser();
+
+                    int response = fileChooser.showOpenDialog(null);
+                    if(response == JFileChooser.APPROVE_OPTION){
+                        file_loader reader = new file_loader(fileChooser.getSelectedFile().getAbsolutePath());
+                        frame_maker(reader);
+                    }
+                    
+                }                
+            }
+            
+        });
+        
         Button save_file = new Button("Save File");
         save_file.setPreferredSize(new Dimension(100,40));
         
         Button new_window = new Button("New Window");
         new_window.setPreferredSize(new Dimension(100,40));
+
+        new_window.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                frame_maker(new file_loader());
+            }
+            
+        });
+
+        Button new_tab = new Button("New Tab");
+        new_tab.setPreferredSize(new Dimension(100, 40));
         
         header.add(open_file);
         header.add(save_file);
         header.add(new_window);
+        header.add(new_tab);
 
         // Add all content to frame
         frame.getContentPane().add(header, BorderLayout.NORTH);
