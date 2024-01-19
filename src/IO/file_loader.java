@@ -1,4 +1,4 @@
-package csvIO;
+package IO;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -9,7 +9,7 @@ public class file_loader {
     public ArrayList<ArrayList<String>> text = new ArrayList<>();
     public int rows;
     public int cols = 0;
-    
+
     public file_loader() {
     }
 
