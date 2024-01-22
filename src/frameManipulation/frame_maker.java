@@ -4,6 +4,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
@@ -21,10 +22,20 @@ import java.awt.Toolkit;
 import java.io.File;
 
 public class frame_maker {
+    //Application frame
     JFrame frame = new JFrame("Khalil's KoolGrid Editor");
 
+    //Content pane (Split pane for controlling size of content areas)
+    JSplitPane terminal_grid = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
 
+    //Terminal TextArea
     JTextArea terminalIO = new JTextArea();
+    
+    //Cell Grid area
+    JPanel CellGrid = new JPanel(new GridLayout(501, 31, 0, 0));
+
+
+    //Header buttons
     public Button open_file = new Button("Open File");
     public Button load = new Button("Load File");
     public Button save_file = new Button("Save File");
@@ -35,9 +46,9 @@ public class frame_maker {
         frame_init();
     }
 
-    public frame_maker(File selected_file) {
+    public frame_maker(String path) {
         frame_init();
-        load(selected_file);
+        load(path);
     }
 
     public void frame_init() {
@@ -63,37 +74,37 @@ public class frame_maker {
         header.add(new_window);
         header.add(new_tab);
 
-        JPanel terminal = new JPanel();
-        terminal.setLayout(new FlowLayout(FlowLayout.LEFT));
-        terminalIO.setLineWrap(true);
-        terminalIO.setPreferredSize(new Dimension(1920, 200));
-
-        terminal.add(terminalIO);
-
-        frame.getContentPane().add(terminal, BorderLayout.SOUTH);
         frame.getContentPane().add(header, BorderLayout.NORTH);
+        terminal_init();
     }
 
     public void init() {
         frame.setVisible(true);
     }
 
-    public void load(File selected_file) {
-        file_loader reader = new file_loader(selected_file.getAbsolutePath());
+    public void load(String path) {
+        
+        CellGrid.removeAll();
 
-        int rows = reader.rows;
-        int cols = reader.cols;
-
-        JPanel CellGrid = new JPanel(new GridLayout(rows, cols, 0, 0));
-
+        
+        file_loader reader = new file_loader();
+        int rows=500;
+        int cols=30;
+        if(path != null){
+            reader = new file_loader(path);
+            rows = reader.rows;
+            cols = reader.cols;
+        }
+        create_header(cols);
         for (int i = 0; i < rows; i++) {
+
             for (int j = 0; j < cols; j++) {
                 JTextField text = new JTextField();
 
                 try {
                     text.setText(reader.text.get(i).get(j));
                 } catch (IndexOutOfBoundsException e) {
-                    text.setText("");
+                    text.setText(" ");
                 } finally {
                     text.setPreferredSize(new Dimension(50, 25));
                     text.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
@@ -102,10 +113,52 @@ public class frame_maker {
                 }
             }
         }
-        JScrollPane scrollPane = new JScrollPane(CellGrid);
-        frame.getContentPane().add(scrollPane, BorderLayout.CENTER);
+
+        JScrollPane GridParent = new JScrollPane(CellGrid);
+        JScrollPane terminalParent = new JScrollPane(terminalIO);
+
+        terminal_grid.setTopComponent(GridParent);
+        terminal_grid.setBottomComponent(terminalParent);
+        terminal_grid.setDividerLocation(0.7);
+
+
+        frame.getContentPane().add(terminal_grid, BorderLayout.CENTER);
         frame.pack();
         frame.setVisible(true);
     }
 
+
+    public void terminal_init(){
+        terminalIO.setLineWrap(true);
+        terminalIO.setPreferredSize(new Dimension(1920, 200));
+        terminalIO.setBorder(BorderFactory.createLineBorder(Color.BLUE,3));
+
+        terminal_grid.add(terminalIO);
+        terminal_grid.setBottomComponent(terminalIO);
+
+        frame.getContentPane().add(terminal_grid, BorderLayout.CENTER);
+    }
+
+    public void create_header(int cols){
+        for(int i =0; i<cols;i++){
+            String text = "";
+            int index = 'A';
+            if(i>25){
+                index = index+i-26;
+                char car = ((char)index);
+                text = "A"+car;
+            }else{
+                index = index+i;
+                char car = ((char)index);
+                text = ""+car;
+            }
+
+            
+            JTextField header = new JTextField(text);
+
+            CellGrid.add(header);
+
+        }
+
+    }
 }

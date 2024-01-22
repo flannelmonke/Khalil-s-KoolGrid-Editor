@@ -14,7 +14,6 @@ public class file_loader {
     }
 
     public file_loader(String file_path) {
-
         try {
             String line = "";
             BufferedReader br = new BufferedReader(new FileReader(file_path));

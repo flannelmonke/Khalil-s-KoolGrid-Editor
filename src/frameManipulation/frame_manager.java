@@ -40,7 +40,7 @@ public class frame_manager {
 
                     int response = fileChooser.showOpenDialog(null);
                     if (response == JFileChooser.APPROVE_OPTION) {
-                        create_new_frame(new frame_maker(fileChooser.getSelectedFile().getAbsoluteFile()));
+                        create_new_frame(new frame_maker(fileChooser.getSelectedFile().getAbsolutePath()));
                     }
                 }
             }
@@ -66,7 +66,8 @@ public class frame_manager {
                     int response = fileChooser.showOpenDialog(null);
 
                     if(response==JFileChooser.APPROVE_OPTION){
-                        frame.load(new File(fileChooser.getSelectedFile().getAbsolutePath()));
+                        System.out.println(fileChooser.getSelectedFile().getAbsolutePath());
+                        frame.load(fileChooser.getSelectedFile().getAbsolutePath());
                     }
                 }
             }
