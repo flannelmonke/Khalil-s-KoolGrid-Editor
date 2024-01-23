@@ -4,8 +4,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.JTextArea;
 
@@ -23,40 +21,38 @@ public class terminal_manager {
         }
     }
 
-
-    public void run_command(String command, JTextArea terminal){
+    public void run_command(String command, JTextArea terminal) {
         setCommandPrefix();
         setCommand(command);
 
-        try{
+        try {
             ProcessBuilder processBuilder = new ProcessBuilder(this.command);
             processBuilder.directory(this.workingDirectory);
             processBuilder.redirectErrorStream(true);
-            
+
             Process process = processBuilder.start();
-            
-            try(PrintWriter writer = new PrintWriter(process.getOutputStream())){
+
+            try (PrintWriter writer = new PrintWriter(process.getOutputStream())) {
                 writer.println(terminal.getText());
             }
-            
-                try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
-                    String line;
-                    int count = 1;
-                    while ((line = reader.readLine()) != null) {
-                        System.out.println(count);
-                        System.out.println(reader.readLine());
-                        terminal.append(line + "\n");
-                        count++;
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
 
-        } catch(Exception e){
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+                String line;
+                int count = 1;
+                while ((line = reader.readLine()) != null) {
+                    System.out.println(count);
+                    System.out.println(reader.readLine());
+                    terminal.append(line + "\n");
+                    count++;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        } catch (Exception e) {
             e.printStackTrace();
         }
-}
-    
+    }
 
     public File getWorkingDirectory() {
         return workingDirectory;
