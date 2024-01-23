@@ -69,6 +69,7 @@ public class frame_maker {
 
         frame.getContentPane().add(header, BorderLayout.NORTH);
         terminal_init();
+        cell_terminal.setDividerLocation(0.7);
     }
 
     public void init() {
@@ -113,18 +114,22 @@ public class frame_maker {
         }
 
         JScrollPane GridParent = new JScrollPane(CellGrid);
+        GridParent.setPreferredSize(new Dimension(800, 800));
         cell_terminal.setTopComponent(GridParent);
         terminal_init();
 
         frame.getContentPane().add(cell_terminal, BorderLayout.CENTER);
         frame.pack();
+        cell_terminal.setDividerLocation(0.7);
         frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         frame.setVisible(true);
     }
 
     public void terminal_init() {
         terminal term = new terminal();
+        term.setPreferredSize(new Dimension(800, 100));
         cell_terminal.setBottomComponent(term);
+
     }
 
     public void create_cell_index(int cols) {
