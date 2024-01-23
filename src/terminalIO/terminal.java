@@ -4,13 +4,16 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.nio.file.Path;
 
 public class terminal extends JPanel {
     private JTextArea outputTextArea;
     private JTextField commandInputField;
+    private Font terminalFont = null;
 
     public terminal() {
         setLayout(new BorderLayout());
@@ -29,29 +32,41 @@ public class terminal extends JPanel {
             }
         });
 
+        Path default_font_path = Path.of("lib/assets/fonts/JetBrainsMono-Regular.ttf");
+
+        setFont(null, new File(default_font_path.toAbsolutePath().toString()));
         JPanel inputPanel = new JPanel(new BorderLayout());
         inputPanel.add(commandInputField, BorderLayout.CENTER);
         inputPanel.add(executeButton, BorderLayout.EAST);
         add(inputPanel, BorderLayout.SOUTH);
+        executeCommand("");
     }
 
-    private void executeCommand(String command) {
-        try {
-            ProcessBuilder processBuilder = new ProcessBuilder("cmd.exe");
-            processBuilder.redirectErrorStream(true);
-            Process process = processBuilder.start();
+    public void executeCommand(String command) {
+        switch (command) {
+            case "clear":
+            case "cls":
+                outputTextArea.setText("");
+                break;
+            default:
+                try {
+                    ProcessBuilder processBuilder = new ProcessBuilder("cmd.exe", "/k");
+                    processBuilder.redirectErrorStream(true);
+                    Process process = processBuilder.start();
 
-            // Redirect the input stream to write commands to the process
-            OutputStream outputStream = process.getOutputStream();
-            OutputStreamWriter writer = new OutputStreamWriter(outputStream);
-            writer.write(command + "\n");
-            writer.flush();
+                    // Redirect the input stream to write commands to the process
+                    OutputStream outputStream = process.getOutputStream();
+                    OutputStreamWriter writer = new OutputStreamWriter(outputStream);
+                    writer.write(command + "\n");
+                    writer.flush();
 
-            // Read the output of the command prompt and display it in the JTextArea
-            readProcessOutput(process);
+                    // Read the output of the command prompt and display it in the JTextArea
+                    readProcessOutput(process);
 
-        } catch (IOException ex) {
-            ex.printStackTrace();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+                break;
         }
     }
 
@@ -68,4 +83,28 @@ public class terminal extends JPanel {
             }
         }).start();
     }
+
+    public JTextField getCommandInputField() {
+        return commandInputField;
+    }
+
+    public void setFont(Font font, File file) {
+        if (font != null) {
+            terminalFont = font;
+            outputTextArea.setFont(terminalFont);
+            commandInputField.setFont(terminalFont);
+        } else if (file != null) {
+            try {
+                terminalFont = Font.createFont(Font.TRUETYPE_FONT, file).deriveFont(12f);
+                GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+                ge.registerFont(terminalFont);
+
+                outputTextArea.setFont(terminalFont);
+                commandInputField.setFont(terminalFont);
+            } catch (FontFormatException | IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
 }

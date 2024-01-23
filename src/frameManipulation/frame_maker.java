@@ -6,6 +6,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 
 import IO.file_loader;
 import terminalIO.terminal;
@@ -18,6 +19,8 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Toolkit;
+import java.io.File;
+import java.nio.file.Path;
 
 public class frame_maker {
     // Application frame
@@ -28,10 +31,13 @@ public class frame_maker {
     // Cell Grid area
     JPanel CellGrid = new JPanel(new GridLayout(501, 31, 0, 0));
 
+    terminal term = new terminal();
+
     // Header buttons
     public Button open_file = new Button("Open File");
     public Button load = new Button("Load File");
     public Button save_file = new Button("Save File");
+    public Button save_as = new Button("Save As");
     public Button new_window = new Button("New Window");
     public Button new_tab = new Button("New Tab");
 
@@ -45,11 +51,13 @@ public class frame_maker {
     }
 
     public void frame_init() {
+        Path icon_path = Path.of("lib/assets/monkey-98455_1920.png");
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setSize(800, 800);
         frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+
         Image icon = Toolkit.getDefaultToolkit()
-                .getImage("D:/Productivity/Stat Machomp/push yourself/lib/assets/monkey-98455_1920.png");
+                .getImage(icon_path.toAbsolutePath().toString());
         frame.setIconImage(icon);
 
         JPanel header = new JPanel();
@@ -60,9 +68,11 @@ public class frame_maker {
         save_file.setPreferredSize(new Dimension(100, 40));
         new_window.setPreferredSize(new Dimension(100, 40));
         new_tab.setPreferredSize(new Dimension(100, 40));
+        save_as.setPreferredSize(new Dimension(100, 40));
 
         header.add(open_file);
         header.add(save_file);
+        header.add(save_as);
         header.add(load);
         header.add(new_window);
         header.add(new_tab);
@@ -126,10 +136,8 @@ public class frame_maker {
     }
 
     public void terminal_init() {
-        terminal term = new terminal();
         term.setPreferredSize(new Dimension(800, 100));
         cell_terminal.setBottomComponent(term);
-
     }
 
     public void create_cell_index(int cols) {

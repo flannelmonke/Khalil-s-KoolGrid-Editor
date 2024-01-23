@@ -3,6 +3,7 @@ package frameManipulation;
 import java.util.ArrayList;
 import javax.swing.JFileChooser;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 
 import java.awt.Button;
 import java.awt.event.ActionEvent;
@@ -25,6 +26,7 @@ public class frame_manager {
         open_file_script(frames.get(number_of_frames - 1).open_file);
         new_window_script(frames.get(number_of_frames - 1).new_window);
         load_file_script(frames.get(number_of_frames - 1).load, frames.get(number_of_frames - 1));
+        terminal_return(frames.get(number_of_frames - 1).term.getCommandInputField());
 
         frames.get(number_of_frames - 1).init();
     }
@@ -74,7 +76,7 @@ public class frame_manager {
         });
     }
 
-    public void terminal_return(JTextArea terminal) {
+    public void terminal_return(JTextField terminal) {
         terminal.addKeyListener(new KeyListener() {
             // Key code for return key is 10
             @Override
@@ -84,14 +86,10 @@ public class frame_manager {
 
             @Override
             public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == 10) {
-                    String text = terminal.getText();
-                    String[] lines = text.split("\n");
-                    String last_line = lines[lines.length - 1];
-                    String[] line = last_line.split(".:\\.[^>]*>");
-                    for (int i = 0; i < line.length; i++) {
-                        System.out.println(line[i]);
-                    }
+                if (terminal.getText().length() > 0 && e.getKeyCode() == 10) {
+                    String command = terminal.getText();
+                    terminal.setText("");
+                    frames.get(number_of_frames - 1).term.executeCommand(command);
                 }
             }
 
