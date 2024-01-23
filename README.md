@@ -21,3 +21,4 @@ On top of reading and writing directly to CSV, I aim to add direct access to the
 
 - Add buttons for making new rows and columns
 - Implement file tree navigator
+- Implement saving functions
