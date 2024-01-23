@@ -7,8 +7,10 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 
 import IO.file_loader;
+import terminalIO.terminal;
 
 import java.awt.BorderLayout;
 import java.awt.Button;
@@ -18,24 +20,18 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Toolkit;
-
-import java.io.File;
+import java.util.ArrayList;
 
 public class frame_maker {
-    //Application frame
+    // Application frame
     JFrame frame = new JFrame("Khalil's KoolGrid Editor");
 
-    //Content pane (Split pane for controlling size of content areas)
-    JSplitPane terminal_grid = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
+    JSplitPane cell_terminal = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
 
-    //Terminal TextArea
-    JTextArea terminalIO = new JTextArea();
-    
-    //Cell Grid area
+    // Cell Grid area
     JPanel CellGrid = new JPanel(new GridLayout(501, 31, 0, 0));
 
-
-    //Header buttons
+    // Header buttons
     public Button open_file = new Button("Open File");
     public Button load = new Button("Load File");
     public Button save_file = new Button("Save File");
@@ -83,21 +79,26 @@ public class frame_maker {
     }
 
     public void load(String path) {
-        
+
         CellGrid.removeAll();
 
-        
         file_loader reader = new file_loader();
-        int rows=500;
-        int cols=30;
-        if(path != null){
+        int rows = 500;
+        int cols = 30;
+        if (path != null) {
             reader = new file_loader(path);
             rows = reader.rows;
             cols = reader.cols;
         }
-        create_header(cols);
+        create_cell_index(cols);
         for (int i = 0; i < rows; i++) {
+            // create thing that goes on the side
+            JTextField side = new JTextField();
+            side.setText("" + (i + 1));
+            side.setPreferredSize(new Dimension(50, 25));
+            side.setEditable(false);
 
+            CellGrid.add(side);
             for (int j = 0; j < cols; j++) {
                 JTextField text = new JTextField();
 
@@ -115,50 +116,48 @@ public class frame_maker {
         }
 
         JScrollPane GridParent = new JScrollPane(CellGrid);
-        JScrollPane terminalParent = new JScrollPane(terminalIO);
+        cell_terminal.setTopComponent(GridParent);
+        terminal_init();
 
-        terminal_grid.setTopComponent(GridParent);
-        terminal_grid.setBottomComponent(terminalParent);
-        terminal_grid.setDividerLocation(0.7);
-
-
-        frame.getContentPane().add(terminal_grid, BorderLayout.CENTER);
+        frame.getContentPane().add(cell_terminal, BorderLayout.CENTER);
         frame.pack();
+        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         frame.setVisible(true);
     }
 
-
-    public void terminal_init(){
-        terminalIO.setLineWrap(true);
-        terminalIO.setPreferredSize(new Dimension(1920, 200));
-        terminalIO.setBorder(BorderFactory.createLineBorder(Color.BLUE,3));
-
-        terminal_grid.add(terminalIO);
-        terminal_grid.setBottomComponent(terminalIO);
-
-        frame.getContentPane().add(terminal_grid, BorderLayout.CENTER);
+    public void terminal_init() {
+        terminal term = new terminal();
+        cell_terminal.setBottomComponent(term);
     }
 
-    public void create_header(int cols){
-        for(int i =0; i<cols;i++){
+    public void create_cell_index(int cols) {
+        JTextField corner = new JTextField();
+        corner.setPreferredSize(new Dimension(50, 25));
+        corner.setEditable(false);
+
+        CellGrid.add(corner);
+
+        for (int i = 0; i < cols; i++) {
             String text = "";
             int index = 'A';
-            if(i>25){
-                index = index+i-26;
-                char car = ((char)index);
-                text = "A"+car;
-            }else{
-                index = index+i;
-                char car = ((char)index);
-                text = ""+car;
+            if (i > 25) {
+                index = index + i - 26;
+                char car = ((char) index);
+                text = "A" + car;
+            } else {
+                index = index + i;
+                char car = ((char) index);
+                text = "" + car;
             }
 
-            
             JTextField header = new JTextField(text);
+            header.setPreferredSize(new Dimension(50, 25));
+            header.setEditable(false);
 
             CellGrid.add(header);
 
         }
 
     }
+
 }

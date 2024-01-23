@@ -4,9 +4,12 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Scanner;
 
 public class processes {
     public static void main(String[] args) throws IOException {
+        Scanner sc = new Scanner(System.in);
+        String input = sc.nextLine();
         try {
             // Specify the working directory
             File workingDirectory = new File("D:/Productivity/");
@@ -14,8 +17,8 @@ public class processes {
             String[] command = new String[4];
             command[0] = "cmd";
             command[1] = "/k";
-            command[3] = "cd";
-            command[2] = "";
+            command[3] = "";
+            command[2] = input;
             // Command and arguments to run on the command prompt
             ProcessBuilder processBuilder = new ProcessBuilder(command);
 
@@ -32,7 +35,7 @@ public class processes {
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
                 String line;
                 while ((line = reader.readLine()) != null) {
-                    System.out.println(line+">");
+                    System.out.println(line);
                 }
             }
             

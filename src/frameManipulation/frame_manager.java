@@ -9,7 +9,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.io.File;
 
 public class frame_manager {
     public ArrayList<frame_maker> frames = new ArrayList<>();
@@ -25,7 +24,7 @@ public class frame_manager {
 
         open_file_script(frames.get(number_of_frames - 1).open_file);
         new_window_script(frames.get(number_of_frames - 1).new_window);
-        load_file_script(frames.get(number_of_frames-1).load, frames.get(number_of_frames-1));
+        load_file_script(frames.get(number_of_frames - 1).load, frames.get(number_of_frames - 1));
 
         frames.get(number_of_frames - 1).init();
     }
@@ -56,47 +55,50 @@ public class frame_manager {
         });
     }
 
-    public void load_file_script(Button load, frame_maker frame){
+    public void load_file_script(Button load, frame_maker frame) {
         load.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(e.getSource()==load){
+                if (e.getSource() == load) {
                     JFileChooser fileChooser = new JFileChooser();
                     int response = fileChooser.showOpenDialog(null);
 
-                    if(response==JFileChooser.APPROVE_OPTION){
+                    if (response == JFileChooser.APPROVE_OPTION) {
                         System.out.println(fileChooser.getSelectedFile().getAbsolutePath());
                         frame.load(fileChooser.getSelectedFile().getAbsolutePath());
                     }
                 }
             }
-            
+
         });
     }
 
-    public void terminal_return(JTextArea terminal){
+    public void terminal_return(JTextArea terminal) {
         terminal.addKeyListener(new KeyListener() {
-            //Key code for return key is 10
+            // Key code for return key is 10
             @Override
             public void keyTyped(KeyEvent e) {
-                // TODO Auto-generated method stub
-                throw new UnsupportedOperationException("Unimplemented method 'keyTyped'");
+
             }
 
             @Override
             public void keyPressed(KeyEvent e) {
-                if(e.getKeyCode()==10)
-                // TODO Auto-generated method stub
-                throw new UnsupportedOperationException("Unimplemented method 'keyPressed'");
+                if (e.getKeyCode() == 10) {
+                    String text = terminal.getText();
+                    String[] lines = text.split("\n");
+                    String last_line = lines[lines.length - 1];
+                    String[] line = last_line.split(".:\\.[^>]*>");
+                    for (int i = 0; i < line.length; i++) {
+                        System.out.println(line[i]);
+                    }
+                }
             }
 
             @Override
             public void keyReleased(KeyEvent e) {
-                // TODO Auto-generated method stub
-                throw new UnsupportedOperationException("Unimplemented method 'keyReleased'");
             }
-            
+
         });
     }
 }

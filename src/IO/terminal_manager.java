@@ -3,51 +3,60 @@ package IO;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.List;
+
+import javax.swing.JTextArea;
 
 public class terminal_manager {
 
     private File workingDirectory = null;
     private String enviornment = System.getProperty("os.name").toLowerCase();
-    private ArrayList<String> command = new ArrayList<>();
+    private String[] command = new String[4];
 
-    public terminal_manager() {
-        setWorkingDirectory(null);
-
+    public terminal_manager(String opened_file) {
+        if (opened_file == null) {
+            setWorkingDirectory(new File(System.getProperty("user.home")));
+        } else {
+            setWorkingDirectory(new File(opened_file).getParentFile());
+        }
     }
 
-    public terminal_manager(File opened_file) {
-        setWorkingDirectory(opened_file.getParentFile());
 
-    }
-
-    public ArrayList<String> run_command(String command, File working_directory) {
-        ArrayList<String> output = new ArrayList<>();
+    public void run_command(String command, JTextArea terminal){
         setCommandPrefix();
         setCommand(command);
-        setWorkingDirectory(working_directory);
+
         try{
-            
             ProcessBuilder processBuilder = new ProcessBuilder(this.command);
             processBuilder.directory(this.workingDirectory);
             processBuilder.redirectErrorStream(true);
-
+            
             Process process = processBuilder.start();
-
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))){
-                String line;
-                while((line = reader.readLine())!=null){
-                    output.add(line);
-                }
+            
+            try(PrintWriter writer = new PrintWriter(process.getOutputStream())){
+                writer.println(terminal.getText());
             }
+            
+                try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+                    String line;
+                    int count = 1;
+                    while ((line = reader.readLine()) != null) {
+                        System.out.println(count);
+                        System.out.println(reader.readLine());
+                        terminal.append(line + "\n");
+                        count++;
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
 
-        }catch(Exception e){
-            output.add("Boy what is you doing?");
-            return output;
+        } catch(Exception e){
+            e.printStackTrace();
         }
-
-        return output;
-    }
+}
+    
 
     public File getWorkingDirectory() {
         return workingDirectory;
@@ -65,22 +74,23 @@ public class terminal_manager {
         return enviornment;
     }
 
-    public ArrayList<String> getCommand() {
+    public String[] getCommand() {
         return command;
     }
 
     public void setCommandPrefix() {
         if (this.enviornment.contains("win")) {
-            this.command.set(0, "cmd");
-            this.command.set(1, "k");
+            this.command[0] = "cmd";
+            this.command[1] = "/k";
+            this.command[2] = "";
         } else {
-            this.command.set(0, "bash");
-            command.set(1, "-i");
-            command.set(2, "-c");
+            this.command[0] = "bash";
+            this.command[1] = "-c";
+            this.command[2] = "-i";
         }
     }
 
     public void setCommand(String command) {
-        this.command.set(3, command);
+        this.command[3] = command;
     }
 }
