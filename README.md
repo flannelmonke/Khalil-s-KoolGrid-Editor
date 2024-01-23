@@ -20,6 +20,4 @@ On top of reading and writing directly to CSV, I aim to add direct access to the
 ## TODOs
 
 - Add buttons for making new rows and columns
-- Implement New Tab/Page/Sheet or whatever
-- Implement terminal access
 - Implement file tree navigator
