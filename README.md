@@ -1,7 +1,6 @@
 TOC:
-- [TLDR](#TLDR)
-- [TODOs (usually updated)](#TODOs)
 
+- [TLDR](#TLDR)
 
 ## Goals
 
@@ -12,14 +11,11 @@ That being said I've tried using them and it's basically learning a whole new la
 On top of reading and writing directly to CSV, I aim to add direct access to the terminal from within the app, similar to a lot of IDEs. As well as file tree perhaps. I could also add multiple sheets like excel and calc do. However I think that would involve straying away from the reading and writing directly to CSV objective. But I'll see how it goes.
 
 ## TLDR;
-- Make a file editor that can both read and write directly to CSV
+
+- Develop library/package of data science tools I can use directly from the CLI
+  - Python and R for numeric operations and processing
+  - Rust for String operations and processing
+- Make a CSV file editor that can both read and write directly to CSV
 - Give direct access to one or more terminals from the app that is also retractable
 - Make a retractable file tree
 - Allow seamless running of scripts and other executables, whether that be first party, custom or third party.
-
-## TODOs
-
-- Add buttons for making new rows and columns
-- Implement file tree navigator
-- Implement saving functions
-- Create default libraries with Python scripts
