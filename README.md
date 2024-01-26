@@ -3,6 +3,7 @@ TOC:
 - [TLDR](#TLDR)
 
 ## Goals
+This will not be the most revolutionary text editor, or grid editor. It will be a cool project though. I hope to most importantly develop packages that at least I can find uses for. I have chosen Python and R for numeric operations and processing. As well Rust for String processing. More context below.
 
 I am currently trying to break into the data science world. I have learned a lot about Software Development and I've always to build a tool that I would find useful, and hopefully others would too. I've tried using Excel and LibreOffice Calc, however I wanna be able to automate more things. I know that both software programs previously stated have tools to make custom scripts.
 
