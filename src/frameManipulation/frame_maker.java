@@ -1,12 +1,12 @@
 package frameManipulation;
 
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
 
 import IO.file_loader;
 import terminalIO.terminal;
@@ -19,7 +19,6 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Toolkit;
-import java.io.File;
 import java.nio.file.Path;
 
 public class frame_maker {
@@ -41,28 +40,25 @@ public class frame_maker {
     public Button new_window = new Button("New Window");
     public Button new_tab = new Button("New Tab");
 
-    public frame_maker() {
-        frame_init();
-    }
-
     public frame_maker(String path) {
-        frame_init();
         load(path);
     }
 
     public void frame_init() {
+        // set frame properties
         Path icon_path = Path.of("lib/assets/monkey-98455_1920.png");
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setSize(800, 800);
         frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-
         Image icon = Toolkit.getDefaultToolkit()
                 .getImage(icon_path.toAbsolutePath().toString());
         frame.setIconImage(icon);
 
+        // create header
         JPanel header = new JPanel();
         header.setLayout(new FlowLayout(FlowLayout.LEFT));
 
+        // create buttons
         open_file.setPreferredSize(new Dimension(100, 40));
         load.setPreferredSize(new Dimension(100, 40));
         save_file.setPreferredSize(new Dimension(100, 40));
@@ -70,6 +66,7 @@ public class frame_maker {
         new_tab.setPreferredSize(new Dimension(100, 40));
         save_as.setPreferredSize(new Dimension(100, 40));
 
+        // add buttons to header
         header.add(open_file);
         header.add(save_file);
         header.add(save_as);
@@ -77,7 +74,14 @@ public class frame_maker {
         header.add(new_window);
         header.add(new_tab);
 
-        frame.getContentPane().add(header, BorderLayout.NORTH);
+        // combine button panel and cell index panel
+        JPanel header_parent = new JPanel();
+        header_parent.setLayout(new BoxLayout(header_parent, BoxLayout.Y_AXIS));
+        header_parent.add(header);
+        // header_parent.add(create_cell_index(cols, rows));
+
+        // add components to frame
+        frame.getContentPane().add(header_parent, BorderLayout.NORTH);
         terminal_init();
         cell_terminal.setDividerLocation(0.7);
     }
@@ -96,17 +100,12 @@ public class frame_maker {
         if (path != null) {
             reader = new file_loader(path);
             rows = reader.rows;
-            cols = reader.cols;
+            cols = reader.cols + 1;
         }
-        create_cell_index(cols);
-        for (int i = 0; i < rows; i++) {
-            // create thing that goes on the side
-            JTextField side = new JTextField();
-            side.setText("" + (i + 1));
-            side.setPreferredSize(new Dimension(50, 25));
-            side.setEditable(false);
 
-            CellGrid.add(side);
+        frame_init();
+
+        for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
                 JTextField text = new JTextField();
 
@@ -123,15 +122,21 @@ public class frame_maker {
             }
         }
 
-        JScrollPane GridParent = new JScrollPane(CellGrid);
+        // put that shit in border layout
+        JPanel grid_container = new JPanel(new BorderLayout());
+        grid_container.add(create_cell_index(cols, rows), BorderLayout.NORTH);
+        grid_container.add(CellGrid, BorderLayout.CENTER);
+
+        // put that border layout in a scroll pane
+        JScrollPane GridParent = new JScrollPane(grid_container);
         GridParent.setPreferredSize(new Dimension(800, 800));
         cell_terminal.setTopComponent(GridParent);
         terminal_init();
 
         frame.getContentPane().add(cell_terminal, BorderLayout.CENTER);
         frame.pack();
-        cell_terminal.setDividerLocation(0.7);
         frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        cell_terminal.setDividerLocation(0.7);
         frame.setVisible(true);
     }
 
@@ -140,13 +145,17 @@ public class frame_maker {
         cell_terminal.setBottomComponent(term);
     }
 
-    public void create_cell_index(int cols) {
-        JTextField corner = new JTextField();
-        corner.setPreferredSize(new Dimension(50, 25));
-        corner.setEditable(false);
+    public JPanel create_cell_index(int cols, int rows) {
+        // create flow layout for cell index
+        JPanel cell_index = new JPanel(new GridLayout(1, cols + 1, 0, 0));
 
-        CellGrid.add(corner);
+        // create corner cell
+        Button corner = new Button();
+        corner.setPreferredSize(new Dimension(77, 25));
+        corner.setEnabled(false);
+        cell_index.add(corner);
 
+        // add cell index to flow layout
         for (int i = 0; i < cols; i++) {
             String text = "";
             int index = 'A';
@@ -160,14 +169,13 @@ public class frame_maker {
                 text = "" + car;
             }
 
-            JTextField header = new JTextField(text);
-            header.setPreferredSize(new Dimension(50, 25));
-            header.setEditable(false);
+            Button header = new Button(text);
+            header.setPreferredSize(new Dimension(65, 25));
+            // TODO implement highlighting function for current cols
 
-            CellGrid.add(header);
-
+            cell_index.add(header);
         }
-
+        return cell_index;
     }
 
 }

@@ -2,7 +2,6 @@ package frameManipulation;
 
 import java.util.ArrayList;
 import javax.swing.JFileChooser;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 import java.awt.Button;
@@ -25,7 +24,7 @@ public class frame_manager {
 
         open_file_script(frames.get(number_of_frames - 1).open_file);
         new_window_script(frames.get(number_of_frames - 1).new_window);
-        load_file_script(frames.get(number_of_frames - 1).load, frames.get(number_of_frames - 1));
+        load_file_script(frames.get(number_of_frames - 1).load, frames, (number_of_frames - 1));
         terminal_return(frames.get(number_of_frames - 1).term.getCommandInputField());
 
         frames.get(number_of_frames - 1).init();
@@ -52,12 +51,12 @@ public class frame_manager {
         new_window.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                create_new_frame(new frame_maker());
+                create_new_frame(new frame_maker(null));
             }
         });
     }
 
-    public void load_file_script(Button load, frame_maker frame) {
+    public void load_file_script(Button load, ArrayList<frame_maker> frames, int index) {
         load.addActionListener(new ActionListener() {
 
             @Override
@@ -67,8 +66,7 @@ public class frame_manager {
                     int response = fileChooser.showOpenDialog(null);
 
                     if (response == JFileChooser.APPROVE_OPTION) {
-                        System.out.println(fileChooser.getSelectedFile().getAbsolutePath());
-                        frame.load(fileChooser.getSelectedFile().getAbsolutePath());
+                        frames.set(index, new frame_maker(fileChooser.getSelectedFile().getAbsolutePath()));
                     }
                 }
             }
