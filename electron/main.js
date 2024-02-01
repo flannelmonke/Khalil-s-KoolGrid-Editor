@@ -10,7 +10,7 @@ function open_file() {
       if (result.canceled) {
         return;
       }
-      let process = spawn("D:/Productivity/load/target/debug/load.exe", [
+      let process = spawn("./load/target/debug/load.exe", [
         result.filePaths[0],
       ]);
 
