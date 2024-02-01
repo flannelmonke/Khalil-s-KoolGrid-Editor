@@ -1,0 +1,12 @@
+{
+  "name": "kool_grid",
+  "version": "1.0.0",
+  "description": "Grid Editor with CLI",
+  "main": "main.js",
+  "scripts": {
+    "test": "dev",
+    "start": "electron ."
+  },
+  "author": "Khalil",
+  "license": "ISC"
+}
