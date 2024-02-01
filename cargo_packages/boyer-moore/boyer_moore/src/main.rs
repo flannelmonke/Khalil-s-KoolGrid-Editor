@@ -8,5 +8,6 @@ fn main() {
     let input = &args[2];
     let text = fs::read_to_string(input).expect("File not found");
     let result = search::search(pattern.to_string(), text);
+
     println!("Result: {:?}", result);
 }
