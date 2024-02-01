@@ -15,8 +15,7 @@ fn main() {
         end
     );
 
-    let target_path =
-        "D:/Productivity/Stat Machomp/Khalil's KoolGrid Editor/electron/templates/index.html";
+    let target_path = "../electron/templates/index.html";
     let target_dir = Path::new(target_path).parent().unwrap();
 
     fs::create_dir_all(target_dir).expect("error creating directory");
