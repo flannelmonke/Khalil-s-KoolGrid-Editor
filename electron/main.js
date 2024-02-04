@@ -1,6 +1,7 @@
 const { app, BrowserWindow, dialog, Menu } = require("electron");
 const { spawn } = require("child_process");
 
+// Open file dialog
 function open_file() {
   dialog
     .showOpenDialog(BrowserWindow.getFocusedWindow(), {
@@ -10,9 +11,8 @@ function open_file() {
       if (result.canceled) {
         return;
       }
-      let process = spawn("./load/target/debug/load.exe", [
-        result.filePaths[0],
-      ]);
+      console.log(result.filePaths[0]);
+      let process = spawn("./functions/load.exe", [result.filePaths[0]]);
 
       process.stdout.on("data", (data) => {
         console.log(`stdout: ${data}`);
@@ -36,6 +36,8 @@ function open_file() {
     });
 }
 
+function save_file() {}
+
 // MENU TEMPLATE
 const menuTemplate = [
   {
@@ -46,6 +48,10 @@ const menuTemplate = [
         click: () => {
           open_file();
         },
+      },
+      {
+        label: "Save File",
+        click: () => {},
       },
       // other File menu items go here
     ],

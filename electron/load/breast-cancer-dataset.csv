@@ -1,4 +1,4 @@
-﻿S/N,Year,Age,Menopause,Tumor Size (cm),Inv-Nodes,Breast,Metastasis,Breast Quadrant,History,Diagnosis Result
+S/N,Year,Age,Menopause,Tumor Size (cm),Inv-Nodes,Breast,Metastasis,Breast Quadrant,History,Diagnosis Result
 1,2019,40,1,2,0,Right,0,Upper inner,0,Benign
 2,2019,39,1,2,0,Left,0,Upper outer,0,Benign
 3,2019,45,0,4,0,Left,0,Lower outer,0,Benign
