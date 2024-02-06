@@ -1,5 +1,15 @@
 const { app, BrowserWindow, dialog, Menu } = require("electron");
 const { spawn } = require("child_process");
+const { ipcMain } = require("electron");
+
+
+// Global variable to store the number of columns
+let cols = 0;
+let win;
+ipcMain.on("cols-length", (event, length) => {
+  cols = length;
+  console.log(cols);
+});
 
 function open_file() {
   dialog
@@ -10,9 +20,8 @@ function open_file() {
       if (result.canceled) {
         return;
       }
-      let process = spawn("D:/Productivity/load/target/debug/load.exe", [
-        result.filePaths[0],
-      ]);
+      console.log(result.filePaths[0]);
+      let process = spawn("./functions/load.exe", [result.filePaths[0]]);
 
       process.stdout.on("data", (data) => {
         console.log(`stdout: ${data}`);
@@ -47,7 +56,17 @@ const menuTemplate = [
           open_file();
         },
       },
+      {
+        label: "Save File",
+        click: () => {
+          let process = spawn("./functions/save.exe");
+          process.stdout.on("data", (data) => {
+            console.log(`stdout: ${data}`);
+          });
+        },
+      },
       // other File menu items go here
+      ,
     ],
   },
   {
@@ -72,11 +91,12 @@ const menuTemplate = [
 const menu = Menu.buildFromTemplate(menuTemplate);
 Menu.setApplicationMenu(menu);
 
+
 // Create the browser window
 const createWindow = () => {
-  const win = new BrowserWindow({
-    width: 800,
-    height: 600,
+  win = new BrowserWindow({
+    width: 900,
+    height: 900,
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false,
@@ -84,6 +104,7 @@ const createWindow = () => {
   });
   win.webContents.openDevTools();
   win.loadFile("./templates/index.html");
+  win.maximize();
 };
 
 // Create the window when the app is ready
