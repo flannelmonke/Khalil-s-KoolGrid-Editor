@@ -1,7 +1,16 @@
 const { app, BrowserWindow, dialog, Menu } = require("electron");
 const { spawn } = require("child_process");
+const { ipcMain } = require("electron");
 
-// Open file dialog
+
+// Global variable to store the number of columns
+let cols = 0;
+let win;
+ipcMain.on("cols-length", (event, length) => {
+  cols = length;
+  console.log(cols);
+});
+
 function open_file() {
   dialog
     .showOpenDialog(BrowserWindow.getFocusedWindow(), {
@@ -36,8 +45,6 @@ function open_file() {
     });
 }
 
-function save_file() {}
-
 // MENU TEMPLATE
 const menuTemplate = [
   {
@@ -51,9 +58,15 @@ const menuTemplate = [
       },
       {
         label: "Save File",
-        click: () => {},
+        click: () => {
+          let process = spawn("./functions/save.exe");
+          process.stdout.on("data", (data) => {
+            console.log(`stdout: ${data}`);
+          });
+        },
       },
       // other File menu items go here
+      ,
     ],
   },
   {
@@ -78,11 +91,12 @@ const menuTemplate = [
 const menu = Menu.buildFromTemplate(menuTemplate);
 Menu.setApplicationMenu(menu);
 
+
 // Create the browser window
 const createWindow = () => {
-  const win = new BrowserWindow({
-    width: 800,
-    height: 600,
+  win = new BrowserWindow({
+    width: 900,
+    height: 900,
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false,
@@ -90,6 +104,7 @@ const createWindow = () => {
   });
   win.webContents.openDevTools();
   win.loadFile("./templates/index.html");
+  win.maximize();
 };
 
 // Create the window when the app is ready
