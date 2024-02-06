@@ -25,6 +25,7 @@ fn main() {
     );
 
     let end = "</table>
+            <script src='../file_scripts/renderer.js'></script>
             </body>
         </html>";
 
@@ -33,10 +34,10 @@ fn main() {
         .map(|line: &str| {
             let cells = line
                 .split(",")
-                .map(|cell| format!("<td><input type='text' value='{}'></td>", cell))
+                .map(|cell| format!("<td><input type='text' value='{}' oninput='updateValue(this)'></td> \n", cell))
                 .collect::<Vec<_>>()
                 .join("");
-            format!("<tr>{}</tr>", cells)
+            format!("<tr id='poo'> \n {}</tr> \n", cells)
         })
         .collect::<Vec<_>>()
         .join("");
